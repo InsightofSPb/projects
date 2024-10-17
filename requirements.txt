@@ -12,6 +12,7 @@ torchvision==0.13.1
 torchmetrics==0.11.0
 typing_extensions==4.4.0
 wandb==0.13.7
-clearml
+clearml==1.16.4
+opencv-contrib-python==4.10.0.84
 
 scikit-learn~=1.4.0
