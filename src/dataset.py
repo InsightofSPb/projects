@@ -3,6 +3,9 @@ import os
 import numpy as np
 import pandas as pd
 from torch.utils.data import Dataset
+import matplotlib.pyplot as plt
+
+from augmentations import get_train_augmentations
 
 
 
@@ -41,11 +44,32 @@ def main():
     annotations = pd.read_csv("/home/sasha/segment_barcode/data/annotations.csv", sep='\t')
     folder_dir = '/home/sasha/segment_barcode/data/images'
 
-    dataset = BarcodeDataset(annotations_file=annotations, folder_dir=folder_dir)
+    img_width, img_height = 224, 224
+    train_transforms = get_train_augmentations(img_width, img_height)
 
-    for i in range(min(len(dataset), 3)): 
-        img, mask = dataset[i]
-        print(f"Image {i}: shape {img.shape}, Mask {i}: shape {mask.shape}")
+    dataset = BarcodeDataset(annotations_file=annotations, folder_dir=folder_dir, transforms=train_transforms)
+
+    img_width, img_height = 224, 224
+
+    num_images = 5
+
+    output_dir = './augmented_images'
+    os.makedirs(output_dir, exist_ok=True)
+
+    for i in range(num_images):
+        idx = np.random.randint(0, len(dataset))
+        img, mask = dataset[idx]
+        img_np = img.permute(1, 2, 0).numpy()
+        img_np = img_np * 255 
+        img_np = img_np.astype(np.uint8)
+
+        mask_np = mask.numpy()
+        mask_np = (mask_np * 255).astype(np.uint8)
+        overlay = cv2.addWeighted(img_np, 0.8, cv2.cvtColor(mask_np, cv2.COLOR_GRAY2BGR), 0.2, 0)
+
+        output_path = os.path.join(output_dir, f"augmented_image_{i+1}.png")
+        plt.imsave(output_path, overlay)
+        print(f"Сохранено: {output_path}")
 
 
 if __name__ == "__main__":
