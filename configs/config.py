@@ -14,5 +14,3 @@ class LossConfig(BaseModel):
         if value < 0:
             raise ValueError('Weight for loss must be between 0 and 1 inclusive')
         return value
-
-
