@@ -1,3 +1,4 @@
 /data
 /augmented_images
 src/__pycache__/augmentations.cpython-310.pyc
+src/__pycache__/

@@ -6,6 +6,7 @@ from torch.utils.data import Dataset
 import matplotlib.pyplot as plt
 
 from augmentations import get_train_augmentations
+from paths import IMAGES_PATH, ANNOTATION_PATH
 
 
 
@@ -41,8 +42,8 @@ class BarcodeDataset(Dataset):
 
 
 def main():
-    annotations = pd.read_csv("/home/sasha/segment_barcode/data/annotations.csv", sep='\t')
-    folder_dir = '/home/sasha/segment_barcode/data/images'
+    annotations = pd.read_csv(os.path.join(ANNOTATION_PATH, 'annotations.csv'), sep='\t')
+    folder_dir = IMAGES_PATH
 
     img_width, img_height = 224, 224
     train_transforms = get_train_augmentations(img_width, img_height)
