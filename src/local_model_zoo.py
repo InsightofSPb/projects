@@ -6,7 +6,8 @@ class UnetModel:
             encoder_name=encoder_name,
             encoder_weights=encoder_weights,
             in_channels=in_channels,
-            classes=num_cls
+            classes=num_cls,
+            activation=None
         )
     
     def get_model(self):
@@ -19,7 +20,8 @@ class DeepLabV3PlusModel:
             encoder_name=encoder_name,
             encoder_weights=encoder_weights,
             in_channels=in_channels,
-            classes=num_cls
+            classes=num_cls,
+            activation=None
         )
 
     def get_model(self):

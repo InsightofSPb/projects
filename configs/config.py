@@ -46,9 +46,7 @@ class Experiments(BaseModel):
     lr: float
     accelerator: str
     device: int
-    optimizer: str
     optimizer_param: dict
-    scheduler: str
     scheduler_param: dict
     cls_losses: List[LossConfig]
     seg_losses: List[LossConfig]
