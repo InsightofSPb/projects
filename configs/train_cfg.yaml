@@ -1,0 +1,54 @@
+project_name: 'barcode_segmentation'
+experiment_name: 'first try'
+n_epochs: 20
+accelerator: 'gpu'
+device: 0
+optimizer:
+  name: 'Adam'
+  optimizer_param:
+    lr: 0.001
+    weight_decay: 0.0001
+scheduler:
+  name: 'ReduceLROnPlateau'
+  scheduler_param:
+    factor: 0.8
+    patience: 2
+    min_lr: 1e-6
+monitor_metric: 'val_iou'
+monitor_mode: 'max'
+
+
+model:
+  name: 'Unet'  # Unet или DeepLabV3+
+  encoder_name: 'resnet34'  
+  encoder_weights: 'imagenet'
+  in_channels: 3  
+  num_cls: 1
+
+cls_losses:
+  - 
+    name: 'bce'
+    weight: 0.3
+    loss_fn: 'torch.nn.BCEWithLogitsLoss'
+    loss_kwargs: {}
+
+seg_losses:
+  -
+    name: 'focal'
+    weight: 0.3
+    loss_fn: 'segmentation_models_pytorch.losses.FocalLoss'
+    loss_kwargs: {mode: 'binary', from_logits: true}
+  -
+    name: 'dice'
+    weight: 0.4
+    loss_fn: 'segmentation_models_pytorch.losses.DiceLoss'
+    loss_kwargs: {mode: 'binary', from_logits: true}
+
+
+training_settings:
+  batch_size: 8
+  n_workers: 4
+  train_test_split: 0.6
+  img_w: 1600
+  img_h: 256
+  random_seed: 42

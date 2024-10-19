@@ -28,7 +28,7 @@ class BarcodeDataModule(LightningDataModule):
     def setup(self) -> None:
         df = read_dataset_data()
         train_df, test_df = train_test_split(df, train_size=self.train_test_split, random_state=self.random_seed)
-        val_df, test_df = train_test_split(test_df, train_size=0.3, random_state=self.random_seed)
+        val_df, test_df = train_test_split(test_df, train_size=0.5, random_state=self.random_seed)
 
         self.train_dataset = BarcodeDataset(train_df, IMAGES_PATH, self.train_augmentations)
         self.val_dataset = BarcodeDataset(val_df, IMAGES_PATH, self.val_test_augmentations)

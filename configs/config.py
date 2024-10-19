@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 import warnings
 
 from pydantic import BaseModel, validator
@@ -8,7 +8,7 @@ class LossConfig(BaseModel):
     alias: str
     weight: float
     loss_fn: str
-    loss_kwargs: dict
+    loss_kwargs: Dict
 
 
     @validator('weight')
@@ -43,13 +43,16 @@ class Experiments(BaseModel):
     experiment_name: str
     training_settings: TrainSettings
     n_epochs: int
-    lr: float
     accelerator: str
     device: int
-    optimizer_param: dict
-    scheduler_param: dict
+    optimizer: str
+    optimizer_param: Dict
+    scheduler: str
+    scheduler_param: Dict
     cls_losses: List[LossConfig]
     seg_losses: List[LossConfig]
+    monitor_metric: str
+    monitor_mode: str
 
     @classmethod
     def load_yaml(cls, path: str) -> "Experiments":

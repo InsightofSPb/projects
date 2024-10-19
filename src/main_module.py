@@ -51,24 +51,34 @@ class BarcodeModule(LightningModule):
     
 
     def configure_optimizers(self) -> Any:
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.exp_cfg.lr)
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optimizer,
-            mode='min',
-            factor=0.8,
-            patience=2,
-            min_lr=1e-6
-            )
-        
-        return {
-            'optimizer' : optimizer,
-            'lr_scheduler' : {
-                'scheduler' : scheduler,
-                'monitor' : 'val_loss',
-                'interval' : 'epoch',
-                'frequency' : 1,
+        optimizer_cfg = self.exp_cfg['optimizer']
+        optimizer_params = self.exp_cfg['optimizer_param']
+
+        optimizer_name = optimizer_cfg.get('name', 'Adam')
+
+        if optimizer_name == 'Adam':
+            optimizer = torch.optim.Adam(self.model.parameters(), **optimizer_params)
+        elif optimizer_name == 'SGD':
+            optimizer = torch.optim.SGD(self.model.parameters(), **optimizer_params)
+        else:
+            raise ValueError(f"Optimizer {optimizer_name} is not supported")
+
+        scheduler_cfg = self.exp_cfg['scheduler']
+        scheduler_params = self.exp_cfg['scheduler_param']
+
+        if scheduler_cfg == 'ReduceLROnPlateau':
+            scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, **scheduler_params)
+            return {
+                'optimizer': optimizer,
+                'lr_scheduler': {
+                    'scheduler': scheduler,
+                    'monitor': scheduler_params.get('monitor', 'val_loss'),
+                    'interval': scheduler_params.get('interval', 'epoch'),
+                    'frequency': scheduler_params.get('frequency', 1),
+                }
             }
-        }
+        else:
+            raise ValueError(f"Scheduler {scheduler_cfg} is not supported")
     
     def calc_loss(self, pred_masks_logits: torch.Tensor, gt_masks: torch.Tensor) -> torch.Tensor:
         total_loss = 0
@@ -100,7 +110,7 @@ class BarcodeModule(LightningModule):
         gt_masks = gt_masks.long().unsqueeze(1)
         pred_masks_logits = self(images)
         pred_masks = torch.sigmoid(pred_masks_logits)
-        self._test_seg_metrics.update(pred_masks, gt_masks)
+        self.test_seg_metrics.update(pred_masks, gt_masks)
 
     def on_validation_epoch_end(self) -> None:
         metrics = self.val_seg_metrics.compute()
@@ -108,7 +118,7 @@ class BarcodeModule(LightningModule):
             self.log(f'val_{k}', v, on_epoch=True)
         self.val_seg_metrics.reset()
     
-    def on_validation_epoch_end(self) -> None:
+    def on_test_epoch_end(self) -> None:
         metrics = self.test_seg_metrics.compute()
         for k, v in metrics.items():
             self.log(f'test_{k}', v, on_epoch=True)
