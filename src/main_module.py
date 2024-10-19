@@ -81,7 +81,7 @@ class BarcodeModule(LightningModule):
     def calc_loss(self, pred_masks_logits: torch.Tensor, gt_masks: torch.Tensor) -> torch.Tensor:
         total_loss = 0
         for elem in self.seg_losses:
-            loss = elem.loss(pred_masks_logits, gt_masks)
+            loss = elem.entity(pred_masks_logits, gt_masks)
             total_loss += elem.weight * loss
         
         return total_loss
@@ -93,7 +93,7 @@ class BarcodeModule(LightningModule):
         self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         return loss
     
-    def validation_step(self, batch):
+    def validation_step(self, batch, batch_idx):
         images, gt_masks = batch
         gt_masks = gt_masks.long().unsqueeze(1)
         pred_masks_logits = self(images)
@@ -103,7 +103,7 @@ class BarcodeModule(LightningModule):
         pred_masks = torch.sigmoid(pred_masks_logits)
         self.val_seg_metrics.update(pred_masks, gt_masks)
 
-    def test_step(self, batch):
+    def test_step(self, batch, batch_idx):
         images, gt_masks = batch
         gt_masks = gt_masks.long().unsqueeze(1)
         pred_masks_logits = self(images)
