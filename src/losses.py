@@ -19,7 +19,7 @@ def use_loss(cfgs: List[LossConfig]) -> List[Loss]:
         Loss(
             alias=cfg.alias,
             weight=cfg.weight,
-            loss=load_loss(cfg.loss)
+            loss=load_loss(cfg.loss)(**cfg.loss_kwargs)
         ) for cfg in cfgs
     ]
 
