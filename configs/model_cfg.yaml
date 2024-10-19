@@ -1,0 +1,5 @@
+name: 'Unet'  # Unet или DeepLabV3+
+encoder_name: 'resnet34'  
+encoder_weights: 'imagenet'
+in_channels: 3  
+num_cls: 1

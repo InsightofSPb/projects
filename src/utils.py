@@ -2,7 +2,7 @@ import importlib
 from os import path
 from pandas import read_csv, DataFrame
 
-from paths import ANNOTATION_PATH
+from src.paths import ANNOTATION_PATH
 
 def load_loss(obj_path: str, def_obj_path: str = ''):
     obj_path_list = obj_path.rsplit('.', 1)
@@ -14,5 +14,5 @@ def load_loss(obj_path: str, def_obj_path: str = ''):
     return getattr(module_obj, obj_name)
 
 def read_dataset_data() -> DataFrame:
-    df = read_csv(path.join(ANNOTATION_PATH, 'annotations,csv'), sep='\t')
+    df = read_csv(path.join(ANNOTATION_PATH, 'annotations.csv'), sep='\t')
     return df

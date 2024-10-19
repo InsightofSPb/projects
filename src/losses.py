@@ -5,7 +5,7 @@ from torch import nn
 from segmentation_models_pytorch.losses import DiceLoss, FocalLoss
 
 from configs.config import LossConfig
-from utils import load_loss
+from src.utils import load_loss
 
 @dataclass
 class Loss:
@@ -19,7 +19,7 @@ def use_loss(cfgs: List[LossConfig]) -> List[Loss]:
         Loss(
             alias=cfg.alias,
             weight=cfg.weight,
-            loss=load_loss(cfg.loss)(**cfg.loss_kwargs)
+            entity=load_loss(cfg.loss_fn)(**cfg.loss_kwargs)
         ) for cfg in cfgs
     ]
 

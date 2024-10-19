@@ -1,0 +1,115 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.7
+    framework: lightning
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    m:
+    - 1: trainer/global_step
+      6:
+      - 3
+    python_version: 3.10.12
+    start_time: 1729371745.766103
+    t:
+      1:
+      - 1
+      - 5
+      - 9
+      - 41
+      - 49
+      - 53
+      - 55
+      - 63
+      - 74
+      - 80
+      2:
+      - 1
+      - 5
+      - 9
+      - 41
+      - 49
+      - 53
+      - 55
+      - 63
+      - 74
+      - 80
+      3:
+      - 7
+      - 13
+      - 16
+      - 23
+      4: 3.10.12
+      5: 0.13.7
+      8:
+      - 5
+accelerator:
+  desc: null
+  value: gpu
+cls_losses:
+  desc: null
+  value:
+  - alias: bce
+    loss_fn: torch.nn.BCEWithLogitsLoss
+    loss_kwargs: {}
+    weight: 0.3
+device:
+  desc: null
+  value: 0
+experiment_name:
+  desc: null
+  value: first try
+monitor_metric:
+  desc: null
+  value: val_iou
+monitor_mode:
+  desc: null
+  value: max
+n_epochs:
+  desc: null
+  value: 20
+optimizer:
+  desc: null
+  value: Adam
+optimizer_param:
+  desc: null
+  value:
+    lr: 0.001
+    weight_decay: 0.0001
+project_name:
+  desc: null
+  value: barcode_segmentation
+scheduler:
+  desc: null
+  value: ReduceLROnPlateau
+scheduler_param:
+  desc: null
+  value:
+    factor: 0.8
+    min_lr: 1.0e-06
+    patience: 2
+seg_losses:
+  desc: null
+  value:
+  - alias: focal
+    loss_fn: segmentation_models_pytorch.losses.FocalLoss
+    loss_kwargs:
+      mode: binary
+    weight: 0.3
+  - alias: dice
+    loss_fn: segmentation_models_pytorch.losses.DiceLoss
+    loss_kwargs:
+      from_logits: true
+      mode: binary
+    weight: 0.4
+training_settings:
+  desc: null
+  value:
+    batch_size: 8
+    img_h: 256
+    img_w: 1600
+    n_workers: 4
+    random_seed: 42
+    train_test_split: 0.6

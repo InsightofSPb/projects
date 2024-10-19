@@ -38,6 +38,11 @@ class Model(BaseModel):
     in_channels: int
     num_cls: int
 
+    @classmethod
+    def load_yaml(cls, path: str) -> "Model":
+        cfg = OmegaConf.to_container(OmegaConf.load(path), resolve=True)
+        return cls(**cfg)
+
 class Experiments(BaseModel):
     project_name: str
     experiment_name: str

@@ -2,10 +2,10 @@ from typing import Any
 from pytorch_lightning import LightningModule
 import torch
 
-from local_model_zoo import UnetModel, DeepLabV3PlusModel
+from src.local_model_zoo import UnetModel, DeepLabV3PlusModel
 from configs.config import Model, Experiments
-from losses import use_loss
-from metrics import get_metrics
+from src.losses import use_loss
+from src.metrics import get_metrics
 
 class BarcodeModule(LightningModule):
     def __init__(self, cfg_model, cfg_exp) -> None:
@@ -21,11 +21,11 @@ class BarcodeModule(LightningModule):
         self.save_hyperparameters(self.exp_cfg.dict())
 
     def _init_model(self):
-        model_name = self.model_cfg['name']
-        encoder_name = self.model_cfg['encoder_name']
-        encoder_weights = self.model_cfg['encoder_weights']
-        in_channels = self.model_cfg['in_channels']
-        num_cls = self.model_cfg['num_cls']
+        model_name = self.model_cfg.name
+        encoder_name = self.model_cfg.encoder_name
+        encoder_weights = self.model_cfg.encoder_weights
+        in_channels = self.model_cfg.in_channels
+        num_cls = self.model_cfg.num_cls
 
         if model_name == 'Unet':
             return UnetModel(
@@ -51,10 +51,8 @@ class BarcodeModule(LightningModule):
     
 
     def configure_optimizers(self) -> Any:
-        optimizer_cfg = self.exp_cfg['optimizer']
-        optimizer_params = self.exp_cfg['optimizer_param']
-
-        optimizer_name = optimizer_cfg.get('name', 'Adam')
+        optimizer_name = self.exp_cfg.optimizer
+        optimizer_params = self.exp_cfg.optimizer_param
 
         if optimizer_name == 'Adam':
             optimizer = torch.optim.Adam(self.model.parameters(), **optimizer_params)
@@ -63,8 +61,8 @@ class BarcodeModule(LightningModule):
         else:
             raise ValueError(f"Optimizer {optimizer_name} is not supported")
 
-        scheduler_cfg = self.exp_cfg['scheduler']
-        scheduler_params = self.exp_cfg['scheduler_param']
+        scheduler_cfg = self.exp_cfg.scheduler
+        scheduler_params = self.exp_cfg.scheduler_param
 
         if scheduler_cfg == 'ReduceLROnPlateau':
             scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, **scheduler_params)

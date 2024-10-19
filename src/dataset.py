@@ -5,8 +5,8 @@ import pandas as pd
 from torch.utils.data import Dataset
 import matplotlib.pyplot as plt
 
-from augmentations import get_train_augmentations
-from paths import IMAGES_PATH, ANNOTATION_PATH
+from src.augmentations import get_train_augmentations
+from src.paths import IMAGES_PATH, ANNOTATION_PATH
 
 
 
