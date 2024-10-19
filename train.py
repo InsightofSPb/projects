@@ -40,7 +40,8 @@ def train(cfg: Experiments, cfg_model: Model):
             EarlyStopping(monitor=cfg.monitor_metric, patience=4, mode=cfg.monitor_mode),
             LearningRateMonitor(logging_interval='epoch')
         ],
-        deterministic=True
+        deterministic=False,
+        log_every_n_steps=20
     )
 
     trainer.fit(model, datamodule)
