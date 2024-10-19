@@ -1,1 +1,3 @@
 from pytorch_lightning import LightningModule
+
+from local_model_zoo import UnetModel, DeepLabV3PlusModel
