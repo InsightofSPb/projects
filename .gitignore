@@ -7,3 +7,4 @@ src/__pycache__/
 configs/__pycache__/config.cpython-310.pyc
 wandb/latest-run
 infer/data/
+
