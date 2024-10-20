@@ -4,3 +4,5 @@ src/__pycache__/augmentations.cpython-310.pyc
 src/__pycache__/
 /wandb
 /experiments
+/latest-run
+configs/__pycache__/config.cpython-310.pyc
