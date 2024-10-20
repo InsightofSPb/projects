@@ -1,0 +1,21 @@
+inference_settings:
+  batch_size: 4
+  n_workers: 4
+  img_h: 256
+  img_w: 1600
+  random_seed: 42
+  checkpoint_path: "/home/sasha/segment_barcode/experiments/first try/DeepLabV3+_encoder-mobileone_s4_epoch_epoch=07-val_iou_val_iou=0.839.ckpt"
+  data_path: "/home/sasha/segment_barcode/infer/data/images/"  
+  output_path: "/home/sasha/segment_barcode/infer/data/images/results"
+  annotation: /home/sasha/segment_barcode/infer/data/annotations.csv
+
+device_settings:
+  accelerator: "gpu"
+  device: 0
+
+model:
+  name: "DeepLabV3+"
+  encoder_name: "mobileone_s4"
+  encoder_weights: "imagenet"
+  in_channels: 3
+  num_cls: 1

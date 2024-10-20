@@ -9,18 +9,19 @@ from src.losses import use_loss
 from src.metrics import get_metrics
 
 class BarcodeModule(LightningModule):
-    def __init__(self, cfg_model, cfg_exp) -> None:
+    def __init__(self, cfg_model, cfg_exp, inference=False) -> None:
         super().__init__()
         self.model_cfg = cfg_model
         self.exp_cfg = cfg_exp
+        self.inference = inference
         
         self.model = self._init_model()
-
-        self.seg_losses = use_loss(self.exp_cfg.seg_losses)
-        self.train_seg_metrics = get_metrics()
-        self.val_seg_metrics = get_metrics()
-        self.test_seg_metrics = get_metrics()
-        self.save_hyperparameters(self.exp_cfg.dict())
+        if not self.inference:
+            self.seg_losses = use_loss(self.exp_cfg.seg_losses)
+            self.train_seg_metrics = get_metrics()
+            self.val_seg_metrics = get_metrics()
+            self.test_seg_metrics = get_metrics()
+            self.save_hyperparameters(self.exp_cfg.dict())
 
     def _init_model(self):
         model_name = self.model_cfg.name
@@ -168,3 +169,7 @@ class BarcodeModule(LightningModule):
                 )
 
         self.test_seg_metrics.reset()
+
+    def predict_step(self, batch, batch_idx):
+        images = batch[0]
+        return self(images)
