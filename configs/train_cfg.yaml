@@ -1,6 +1,6 @@
 project_name: 'barcode_segmentation'
 experiment_name: 'first try'
-n_epochs: 20
+n_epochs: 25
 accelerator: 'gpu'
 device: 0
 optimizer: 'Adam'
@@ -9,9 +9,9 @@ optimizer_param:
   weight_decay: 0.0001
 scheduler: 'ReduceLROnPlateau'
 scheduler_param:
-  factor: 0.8
+  factor: 0.9
   patience: 2
-  min_lr: 1e-6
+  min_lr: 1e-7
 monitor_metric: 'val_iou'
 monitor_mode: 'max'
 

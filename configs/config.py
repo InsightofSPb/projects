@@ -38,6 +38,9 @@ class Model(BaseModel):
     in_channels: int
     num_cls: int
 
+    clearml: bool
+    wandb: bool
+
     @classmethod
     def load_yaml(cls, path: str) -> "Model":
         cfg = OmegaConf.to_container(OmegaConf.load(path), resolve=True)
