@@ -14,6 +14,7 @@ class InferenceSettings(BaseModel):
     checkpoint_path: str
     data_path: str
     output_path: str
+    annotation: str
 
 class DeviceSettings(BaseModel):
     accelerator: str

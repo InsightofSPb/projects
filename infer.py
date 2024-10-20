@@ -16,10 +16,17 @@ def load_model(cfg: InferenceConfig, model_cfg: ModelInference, checkpoint_path:
 def save_inference_results(original_img, predicted_mask, save_dir, image_name):
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
 
-    axes[0].imshow(original_img.permute(1, 2, 0).cpu().numpy())
+    if original_img.dim() == 3:
+        img = original_img.permute(1, 2, 0).cpu().numpy()
+    else: 
+        img = original_img.cpu().numpy()
+
+    img = (img - img.min()) / (img.max() - img.min())
+
+    axes[0].imshow(img, cmap='gray' if img.ndim == 2 else None)
     axes[0].set_title("Original Image")
     
-    axes[1].imshow(predicted_mask.cpu().numpy(), cmap='gray')
+    axes[1].imshow(predicted_mask.squeeze().cpu().numpy(), cmap='gray')
     axes[1].set_title("Predicted Mask")
     
     plt.savefig(os.path.join(save_dir, f"{image_name}_result.png"))
@@ -32,17 +39,21 @@ def run_inference(cfg: InferenceConfig, model_cfg: ModelInference):
     
     trainer = Trainer(accelerator=cfg.device_settings.accelerator, devices=[cfg.device_settings.device])
     
-    predictions = trainer.predict(model=model, datamodule=datamodule.test_dataloader)
+    predictions = trainer.predict(model=model, datamodule=datamodule)
     
     output_dir = cfg.inference_settings.output_path
     os.makedirs(output_dir, exist_ok=True)
-    
-    for idx, (batch_images, batch_preds) in enumerate(zip(datamodule.dataset, predictions)):
+
+    total_batches = len(datamodule.predict_dataloader())
+
+    for idx, (batch_images, batch_preds) in enumerate(zip(datamodule.test_dataset, predictions)):
         for i in range(len(batch_images)):
             original_img = batch_images[i]
-            predicted_mask = torch.sigmoid(batch_preds[i]) > 0.5 
-            
+            predicted_mask = torch.sigmoid(batch_preds[i]) > 0.5
+
             save_inference_results(original_img, predicted_mask, output_dir, f"image_{idx}_{i}")
+
+        print(f"Processed batch {idx + 1}/{total_batches}")
 
 if __name__ == "__main__":
     cfg = InferenceConfig.load_yaml(os.path.join(CONFIG_PATH, 'inference.yaml'))
