@@ -5,3 +5,4 @@ src/__pycache__/
 /wandb
 /experiments
 configs/__pycache__/config.cpython-310.pyc
+wandb/latest-run
