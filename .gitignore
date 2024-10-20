@@ -6,3 +6,5 @@ src/__pycache__/
 /experiments
 configs/__pycache__/config.cpython-310.pyc
 wandb/latest-run
+infer/data/
+configs/__pycache__/config.cpython-310.pyc

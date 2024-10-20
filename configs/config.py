@@ -4,6 +4,42 @@ import warnings
 from pydantic import BaseModel, validator
 from omegaconf import OmegaConf
 
+
+class InferenceSettings(BaseModel):
+    batch_size: int
+    n_workers: int
+    img_h: int
+    img_w: int
+    random_seed: int
+    checkpoint_path: str
+    data_path: str
+    output_path: str
+
+class DeviceSettings(BaseModel):
+    accelerator: str
+    device: int
+
+class InferenceConfig(BaseModel):
+    inference_settings: InferenceSettings
+    device_settings: DeviceSettings
+
+    @classmethod
+    def load_yaml(cls, path: str) -> "InferenceConfig":
+        cfg = OmegaConf.to_container(OmegaConf.load(path), resolve=True)
+        return cls(**cfg)
+
+class ModelInference(BaseModel):
+    name: str
+    encoder_name: str
+    encoder_weights: str
+    in_channels: int
+    num_cls: int
+
+    @classmethod
+    def load_yaml(cls, path: str) -> "ModelInference":
+        cfg = OmegaConf.to_container(OmegaConf.load(path), resolve=True)
+        return cls(**cfg)
+
 class LossConfig(BaseModel):
     alias: str
     weight: float
